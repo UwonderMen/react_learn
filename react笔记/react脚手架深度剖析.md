@@ -1,5 +1,5 @@
 #react脚手架深度剖析
-`   
+``` 
     1、create-react-app脚手架为了让结构目录更清晰，把安装webpack及配置文件都集成到了react-scripts模块中，放到了node_modules中。但是真是项目中，我们需要在脚手架默认安装的基础上，额外安装一些我们需要的模块，例如：react-router-dom/axios.....，再比如：less/less-loader...
 
     像上面这种情况就可以分情况考虑了：
@@ -35,5 +35,9 @@
                         build.js：执行yarn build执行的脚本
                     
                     本来在项目下的package.json文件也被修改了
+                    
+            webpack可以开启https协议模式：
+                (set HTTPS=true这部分是设置环境变量的值)
+                执行命令：set HTTPS=true&&npm start
     **
-`
+```

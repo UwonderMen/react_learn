@@ -43,6 +43,10 @@ const cssModuleRegex = /\.module\.css$/;
 const sassRegex = /\.(scss|sass)$/;
 const sassModuleRegex = /\.module\.(scss|sass)$/;
 
+//增加less的匹配
+const lessRegex = /\.less$/;
+const lessModuleRegex = /\.module\.less$/;
+
 // This is the production and development configuration.
 // It is focused on developer experience, fast rebuilds, and a minimal bundle.
 module.exports = function(webpackEnv) {
@@ -468,8 +472,18 @@ module.exports = function(webpackEnv) {
                 name: 'static/media/[name].[hash:8].[ext]',
               },
             },
-            // ** STOP ** Are you adding a new loader?
-            // Make sure to add the new loader(s) before the "file" loader.
+            {
+              test: lessRegex,
+              use: getStyleLoaders(
+                {
+                  importLoaders: 2,
+                  sourceMap: isEnvProduction && shouldUseSourceMap,
+                  modules: true,
+                  getLocalIdent: getCSSModuleLocalIdent,
+                },
+                'less-loader'
+              )
+            },
           ],
         },
       ],
