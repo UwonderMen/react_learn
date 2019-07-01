@@ -46,4 +46,183 @@
             })
         }
 
+
+    循环数组创建jsx元素(一般都基于数组的map方法完成迭代)，需要给创建的元素设置唯一的key值（当前循环内容唯一）
+
+    一个jsx如果标签超过两个，那么只能有一个根元素
+        错误写法：
+            let data = "jerrry";
+            let root = document.querySelector("#root");
+            ReactDOM.render(<div>hello world {data}</div><div>asd</div>,root)
+        正确写法：
+            let data = "jerrry";
+            let root = document.querySelector("#root");
+            ReactDOM.render(<div>
+                <div>hello world {data}</div>
+            </div>,root)
+
+
+        1、给元素设置样式类使用的是className而不是class
+            错误写法：
+            let data = "jerrry";
+            let root = document.querySelector("#root");
+            ReactDOM.render(<div class="box">hello world {data}</div>,root)
+        正确写法：
+            let data = "jerrry";
+            let root = document.querySelector("#root");
+            ReactDOM.render(<div className="box">
+                {data}</div>,root)
+        
+        2、style中不能直接的写样式字符串，需要基于样式对象来遍历赋值。注意：{js表达式}中不能直接放置对象，但是除了跟style属性赋值。注意：style的属性要使用小驼峰，不能使用-连接
+            错误写法：
+                let data = "jerrry";
+                let root = document.querySelector("#root");
+                ReactDOM.render(<div style="backgroundColor:red">hello world {data}</div>,root)
+            正确写法：
+                let data = "jerrry";
+                let root = document.querySelector("#root");
+                ReactDOM.render(<div style={{backgroundColor:'red'}}>
+                    {data}</div>,root)
+```
+
+------------------------
+
+#jsx的渲染流程
+    ```
+        前提：
+            import ReactDOM，{render} from 'react-dom';
+            这句话的意思是从react-dom库中导入ReactDOM，逗号后边的内容，是把react-dom导出的对象进行解构<=>等价于import {render} from "react-dom"
+
+            注意：这种方式导入不用使用ReactDOM.render()，直接可以使用render()
+        
+        jsx渲染流程或者机制：
+            1、基于babel中的语法解析模块(使用的解析器是：babel-preset-react)，主要是把jsx语法编译为react.createElement(...)结构
+
+            jsx元素：
+                <div className="box">
+                    {data}
+                </div>
+            转换成js语法：
+                "use strict";
+                React.createElement("div", {
+                    className: "box"
+                }, data);
+            
+            注意：import React from 'react';这个react库中有一个createElment()方法，
+                React.createElement(type,props,children)
+
+            2、执行 React.createElement()方法，这个方法会创建一个对象,这个对象其实就是虚拟DOM
+                console.log(React.createElement("div", {
+                    className: "box"
+                }, data))
+
+                打印：
+                    {$$typeof: Symbol(react.element), type: "h1", key: null, ref: null, props: {…}, …}
+                
+                这个虚拟DOM有哪些属性：
+                    props: 这是一个对象，里边包含的属性
+                        props:{
+                            id: id名
+                            className:class名
+                            type:子元素的标签名
+                            children：子元素的孩子
+                            key:唯一性约束
+                        }
+                    ref: 受控组件与非受控组件相关
+                    type: 表示标签名
+                    key:唯一约束(一般用在循环中，表识唯一性)
+            3、导入import{render} from 'react-dom';使用render方法将 React.createElement()方法创建的虚拟dom其实是个对象，动态绑定到页面上，即伪代码如下：
+                render({type:"h1",props:{....}})
+    ```
+
+#jsx的渲染流程原生实现
+```
+    使用原生实现React.createElement()方法
+        分析：
+            React.createElement(type，props，children)接受三个参数：
+                type：标签类型
+                props：属性
+                children：子元素
+            
+            React.createElement(type，props，children)需要返回一个对象
+
+
+        实现步骤：
+            1、创建一个对象(这个对象默认有四个属性：type、props、ref、key)，最后把这个对象返回
+            
+            2、根据传递的值修改这个对象，修改部分：
+                type：传递进去的type就是type属性
+                props需要做一定的修改：大部分传递props、
+                中的属性都赋值给对象props，有一些比较特殊的，如ref何key属性，我们需要吧传递的props中的这个两个属性值，需要给创建对象这个两个属性，而传递的props中的这两个值必须置为null或者undefined。把传递的children作为新创建对象的props中的一个属性
+
+        代码实现：
+            function createElement(type,props,children){
+                    props = props || {}
+                    let _news_obj = {
+                        type:null,
+                        props:{
+
+                        },
+                        ref:null,
+                        key:null
+                    }
+                    "key" in props ? (_news_obj.key = props.key, props.key=null): _news_obj.key=null;
+                    "ref" in props ? (_news_obj.ref = props.ref, props.ref=null): _news_obj.ref=null;
+                    return {
+                        ..._news_obj,
+                        type,
+                        props:{...props,children}}
+                }
+                let obj = createElement("h1", {className: "box"},"hhj")
+
+```
+```
+        使用原生实现ReactDOM.render()方法
+        简介：
+            render()方法把创建的一个虚拟dom对象，生成对应的DOM元素，插入或者挂载到页面中
+        
+        代码实现：
+            function render(obj,container,callback){
+            let {type,props} = obj;
+            let newElement = null;
+            newElement = document.createElement(type);
+            if(props.children instanceof Object){
+                for(let attr in props){
+                    //遍历属性是从自身开始，然后再到原型链上遍历
+                    if(!props.hasOwnPorperty(attr))break;
+                    if(!props[attr])continue;
+                    if(attr === "className") {
+                        attr = "class";
+                        newElement.setAttribute(attr,props[attr])
+                        continue;
+                    }
+                    if(attr === "style"){
+                        if(attr==="")continue;
+                        for(let cssAttr in props[attr]){
+                            if(props[attr].hasOwnPorperty(cssAttr)){
+                                //这里存在性能影响
+                                //可以改为使用ele.style.cssText
+                            newElement.style[cssAttr] = props[attr][cssAttr];
+                            }
+                        }
+                        continue;
+                    }
+                    newElement.setAttribute(attr,props[attr])
+                }
+                render(props.children,newElement,null)
+            }else{
+                if(typeof props.children == "string"){
+                        newElement.innerHTML = props.children;
+                        container.appendChild(newElement)
+                    }else{
+                        container.appendChild(newElement)
+                    }
+            }
+            callback&&callback()
+        }
+        render({type: 'h1',
+                props: { className: 'box', children: 'hhj' },
+                ref: null,
+                key: null },document.getElementById("root"),()=>{
+                console.log(123)})
 ```
