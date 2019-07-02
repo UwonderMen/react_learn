@@ -5,10 +5,22 @@
 import React from 'react'
 
 export default function Dialog(props) {
-    let { title, age } = props
+    let { title, age, children } = props
+    console.log(children)
+    console.log(React.Children)
     let con = age ? "你妹" : "你哥";
     return <section>
         <h2>{title}</h2>
         <div>{con}</div>
+        {
+            React.Children.count(children)
+        }
     </section>
 }
+
+React.createElement(Dialog, {
+    title: "\u62A5\u9519",
+    flag: 0
+},
+    React.createElement("span", null, "123")
+)
