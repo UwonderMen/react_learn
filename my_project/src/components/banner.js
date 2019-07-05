@@ -47,6 +47,11 @@ export default class Banner extends React.Component {
                 step: 1,
                 speed: 0
             })
+        } else if (nextState.step < 0) {
+            this.setState({
+                step: this.cloneData.length - 2,
+                speed: 0
+            })
         }
     }
     componentDidUpdate() {
@@ -61,7 +66,17 @@ export default class Banner extends React.Component {
                     speed: this.props.speed
                 })
             }, 0)
+        } else if (step === this.cloneData.length - 2 && speed === 0) {
+            setTimeout(() => {
+                this.setState({
+                    step: step - 1,
+                    speed: this.props.speed
+                })
+            }, 0)
         }
+        //为什么不在这里做下一次切换任务的开始标识呢？
+        //因为这里只是页面已经渲染好，并不代表上一次动画已经执行完了
+        // this.isRun = false;不在这里做
     }
 
     render() {
@@ -73,8 +88,12 @@ export default class Banner extends React.Component {
             left: -step * 720 + "px",
             transition: `left ${speed}ms linear 0ms`
         };
-        return <div className="container">
-            <ul className="wrapper" style={wrapper_style}>
+        return <div className="container" onMouseEnter={this.autoPause} onMouseLeave={this.autoPlay} onClick={this.handleClick}>
+            <ul className="wrapper" style={wrapper_style} onTransitionEnd={() => {
+                //标识已经切换完成后才可以再次点击
+                //onTransitionEnd事件表示当动画完成后执行下一个操作
+                this.isRun = false;
+            }}>
                 {
                     this.cloneData.map((item, index) => {
                         return <li key={index}>
@@ -109,4 +128,33 @@ export default class Banner extends React.Component {
             step: this.state.step + 1
         })
     }
+
+    handleClick = (ev) => {
+        /* 
+            使用事件委托来处理左右点击问题
+        */
+        let target = ev.target,
+            target_tag = target.tagName.toLowerCase(),
+            tag_class = target.className;
+
+        if (target_tag === "a" && /\barrow\b/.test(tag_class)) {
+            if (this.isRun) return;
+            this.isRun = true;
+
+            if (/\barrowLeft\b/.test(tag_class)) {
+                this.setState({
+                    step: this.state.step - 1
+                })
+            } else if (/\barrowRight\b/.test(tag_class)) {
+                this.setState({
+                    step: this.state.step + 1
+                })
+            }
+        }
+    }
+
+    autoPause = () => clearInterval(this.autoTimer)
+
+    autoPlay = () => this.autoTimer = setInterval(this.autoMove, this.props.interval)
+
 }
