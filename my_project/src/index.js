@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import "./static/css/reset.css"
 import Banner from "./components/banner";
 
+import A from "./components/test";
+
+
 
 let img_data = [
   {
@@ -36,8 +39,23 @@ ReactDOM.render(<div className="main">
     step={1}
     speed={500}>
   </Banner>
+  <div className="123" id="dd">aaaaa</div>
+  <A></A>
 </div>, root);
 
+
+
+console.log(React.createElement("div", {
+  className: "main"
+}, React.createElement(Banner, {
+  data: img_data,
+  interval: 3000,
+  step: 1,
+  speed: 500
+}), React.createElement("div", {
+  className: "123",
+  id: "dd"
+}, "aaaaa"), React.createElement(A, null)))
 
 
 
