@@ -84,3 +84,18 @@
     只要render函数重新渲染， 就会重新执行getChildContext这个方法，重新更新父组件的上下文信息，果父组件上下文信息更改了，子组件在重新调取的时候，会使用最新的上下文信息。因此父组件中关于constructor方法、render方法、getChildContext方法执行先后顺序：constructor方法->render方法->getChildContext方法。但是只要render执行了，getChildContext方法都会执行
 ```
 
+#平行组件传递消息的方法
+```
+    解决方法：
+        1、让两个平行组件拥有相同的父组件
+            父组件parent，子组件有A组件和B组件。父组件中有一些信息，父组件把一个方法传递给A，A把方法执行了(方法中执行修改组件信息值)，父组件再把最新的消息传递给B即可，等价于A的操作影响了B
+        
+        2、基于redux来进行状态管理，实现组件之间的信息传递(经常使用的方案)
+```
+
+#关于redux基础
+```
+    redux可以应用于任何项目中(包括vue、jquery、react都可以)，react-redux才是专门为react设计的一套方案
+
+    *基于redux可以实现任何组件之间的信息传递*
+```

@@ -4,9 +4,33 @@ import ReactDOM from 'react-dom';
 // import Banner from "./components/banner";
 // import OtherSwipe from "./components/other_swipe"
 // import A from "./components/test";
-import "bootstrap/dist/css/bootstrap.css"
+import "bootstrap/dist/css/bootstrap.css";
+import Vote from "./components/Vote/Vote";
+import store from "./store";
 
-import Vote from "./components/Vote/Vote"
+// import { createStore } from "redux";
+
+// let reducer = (state = { n: 1, m: 1 }, action) => {
+//   let { type } = action;
+//   switch (type) {
+//     case "VOTE_SUPPORT":
+//       state = { ...state, n: state.n + 1 }
+//       break;
+//     case "VOTE_AGAINST":
+//       state = { ...state, m: state.m + 1 }
+//       break;
+//   }
+//   return state;//只有把最新的state状态值返回才能把原有的状态修改
+// }
+
+// let store = createStore(reducer)
+
+// 创建store后提供了三个方法：
+/*
+  dispatch：派发行为(传递一个对象，对象中有一个type属性)，通知reducer修改状态信息
+  subscribe：事件池追加方法
+  getState:获取最新管理的状态信息
+*/
 
 
 // let img_data = [
@@ -48,14 +72,8 @@ ReactDOM.render(<div className="col-md-4 col-md-offset-4">
     speed={500}>
   </Banner> */}
   {/* <OtherSwipe data={img_data} className="container" /> */}
-  <Vote title="战马能量" count={{
-    bnum: 100,
-    anum: 50
-  }}></Vote>
-  <Vote title="淑仪" count={{
-    bnum: 100,
-    anum: 50
-  }}></Vote>
+  <Vote title="战马能量" store={store}></Vote>
+  <Vote title="淑仪" store={store}></Vote>
 </div>, root);
 
 
