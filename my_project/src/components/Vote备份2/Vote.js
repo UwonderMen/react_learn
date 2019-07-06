@@ -11,11 +11,11 @@ export default class Vote extends React.Component {
     }
 
     render() {
-        let { title } = this.props;
+        let { title, store } = this.props;
         return <div className="panel panel-default">
-            <VoteHead></VoteHead>
-            <VoteBody></VoteBody>
-            <VoteFooter></VoteFooter>
+            <VoteHead title={title} store={store}></VoteHead>
+            <VoteBody store={store}></VoteBody>
+            <VoteFooter store={store}></VoteFooter>
         </div >
     }
 }

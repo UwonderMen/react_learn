@@ -1,29 +1,25 @@
 import React from "react";
+import action from "../../store/action";
+import { connect } from "react-redux";
 
-export default class VoteBody extends React.Component {
+/** 
+ * 相对对于传统的redux，我们做的步骤优化：
+ *  1、导出的不在是我们创建的组件，而是基于react-redux导出的connect构造后的
+ *      高阶组件
+ *          导出的组件形式：
+ *              export default connect([mapStateToProps],[mapDispatchToProps])(VoteBody)
+ *            mapStateToProps和mapDispatchToProps是一个函数
+*/
+
+
+class VoteBody extends React.Component {
     constructor(props, context) {
         super(props, context);
-        //getState()后边访问的状态属性是：合并reducer时使用的名字
-        let { n, m } = this.props.store.getState().VoteReducer;
-        this.state = {
-            n, m
-        };
     }
-
-    componentDidMount() {
-        this.props.store.subscribe(() => {
-            let { n, m } = this.props.store.getState().VoteReducer;
-            this.setState({
-                n, m
-            })
-        })
-    }
-
     render() {
-        let { n, m } = this.state,
-            rate = (n / (n + m) * 100).toFixed(2) + "%";
-            rate = (n + m) === 0 ? 0.00 + "%" : rate;
-
+        let { n, m } = this.props,
+            rate = (n / (n + m) * 100);
+        rate = isNaN(rate) ? 0 + "%" : rate;
         return <div className="panel-body">
             <p>
                 <span>支持人数：</span>
@@ -40,3 +36,16 @@ export default class VoteBody extends React.Component {
         </div>
     }
 }
+
+let mapStateToProps = state => {
+    //state为redux的所有信息
+    //返回值用于挂载到组件属性上的信息
+    return {
+        ...state.VoteReducer
+    }
+}
+let mapDispatchToProps = dispatch => {
+    return {}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(VoteBody)

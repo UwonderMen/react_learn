@@ -8,6 +8,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import Vote from "./components/Vote/Vote";
 import store from "./store";
 
+import { Provider } from "react-redux";
+
 // import { createStore } from "redux";
 
 // let reducer = (state = { n: 1, m: 1 }, action) => {
@@ -52,14 +54,15 @@ import store from "./store";
 // ]
 
 let root = document.body.querySelector("#root");
-ReactDOM.render(<div className="col-md-4 col-md-offset-4">
-  {/* 
+ReactDOM.render(<Provider store={store}>
+  <div className="col-md-4 col-md-offset-4">
+    {/* 
     :data 轮播图需要绑定的数据（默认空数组[]）
     :interval 自动轮播间隔时间（默认3000ms）
     :step 默认展示图片额索引（默认1）
     :speed：每一张切换所需要的运动时间（默认300ms）
   */}
-  {/* <Banner
+    {/* <Banner
     data={img_data}
     interval={3000}
     step={1}
@@ -71,10 +74,10 @@ ReactDOM.render(<div className="col-md-4 col-md-offset-4">
     step={1}
     speed={500}>
   </Banner> */}
-  {/* <OtherSwipe data={img_data} className="container" /> */}
-  <Vote title="战马能量" store={store}></Vote>
-  <Vote title="淑仪" store={store}></Vote>
-</div>, root);
+    {/* <OtherSwipe data={img_data} className="container" /> */}
+    <Vote title="战马能量"></Vote>
+  </div>
+</Provider >, root);
 
 
 
