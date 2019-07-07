@@ -8,5 +8,17 @@ export const VOTE_SUPPORT = "VOTE_SUPPORT";
 
 export const VOTE_AGAINST = "VOTE_AGAINST";
 
+export const TODOLIST_ADD = "TODOLIST_ADD";
 
+export const TODOLIST_DONE = "TODOLIST_DONE";
+
+export const TODOLIST_WILL_DO = "TODLIST_WILL_DO";
+
+export const $$INIT_STATE = "$$INIT_STATE";
+
+export const TODOLIST_ALL = "TODOLIST_ALL";
+
+export const TODOUPDATE = "TODOUPDATE";
+
+export const TODODELETE = "TODODELETE";
 

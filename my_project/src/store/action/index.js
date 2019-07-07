@@ -14,14 +14,16 @@
  * 
  */
 
-import VoteAction from "./vote"
-import PersonAction from "./person"
+// import VoteAction from "./vote"
+// import PersonAction from "./person"
+import ToDoListAction from "./todolist"
 
 
 
 let action = {
-    VoteAction,
-    PersonAction
+    // VoteAction,
+    // PersonAction,
+    ToDoListAction
 }
 
 export default action;

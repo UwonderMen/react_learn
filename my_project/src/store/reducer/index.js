@@ -24,17 +24,17 @@
  *  比如：以前获取vote的状态信息直接let {title} = getState()，现在必须let {title} = getState().vote
  */
 
-import VoteReducer from "./vote";
-import PersonReducer from "./person";
+// import VoteReducer from "./vote";
+// import PersonReducer from "./person";
+import ToDoListReducer from "./todolist";
 
 //使用redux模块提供的combineReducers和并reducer
 import { combineReducers } from "redux";
 
 let reducer = combineReducers({
-    VoteReducer,
-    PersonReducer
+    // VoteReducer,
+    // PersonReducer,
+    ToDoListReducer,
 });
-
-console.log(reducer)
 
 export default reducer;
