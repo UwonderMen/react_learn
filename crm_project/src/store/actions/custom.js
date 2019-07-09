@@ -1,10 +1,14 @@
 import * as Types from "../action-types";
 
 let CustomAction = {
-    create(payload){
-        return {
-            type:Types.CUSTOM_ADD,
-            payload
+    create(payload) {
+        return (dispatch) => {
+            setTimeout(() => {
+                dispatch({
+                    type: Types.CUSTOM_ADD,
+                    payload
+                })
+            }, 3000);
         }
     }
 };
