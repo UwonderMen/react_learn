@@ -192,3 +192,17 @@
 ```
     如果使用二级路由，那么一级路由中Route组件属性不能使用exact或者strict。
 ```
+
+
+#关于路由的使用注意
+```
+    路由的验证和渲染是同步的，不允许在校验中出现异步，因为这样在异步没有完成之前，根本不知道渲染谁，语法不支持这样。
+        下面这样写就是异步验证后返回组件，是错误的做法：
+          <Route path="/person/info" render={async () => {
+            //进入个人页面进行登录验证
+            let result = await checkLogin();
+            if (parseInt(result.code) === 0)
+                return <Info />
+            return <Tips />
+        }}></Route>
+```

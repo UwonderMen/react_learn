@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>在线课堂</title>
+</head>
+
+<body>
+  <script>
+    ; (function () {
+      function computed() {
+        let html_width = document.documentElement.clientWidth,
+          desW = 750;
+        html_width >= desW ? document.documentElement.style.fontSize = "100px" : document.documentElement.style.fontSize = ((document.documentElement.clientWidth / desW) * 100 + "px");
+      }
+      computed();
+      window.addEventListener("resize", computed, false);
+    }())
+  </script>
+  <div id="root"></div>
+</body>
+
+</html>
