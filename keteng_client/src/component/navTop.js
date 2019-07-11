@@ -9,16 +9,16 @@ import { Link } from "react-router-dom";
  */
 import { Transition } from 'react-transition-group';
 
-const duration = 600,
+const duration = 200,
     defaultStyle = {
         transition: `opacity ${duration}ms ease-in-out`,
         opacity: 0,
     },
     transitionStyles = {
-        entering: { opacity: 1 },
-        entered: { opacity: 1 },
-        exiting: { opacity: 0 },
-        exited: { opacity: 0 },
+        entering: { opacity: 0, },
+        entered: { opacity: 1, },
+        exiting: { opacity: 1, },
+        exited: { opacity: 0, },
     };
 
 class NavTop extends React.Component {
@@ -50,7 +50,8 @@ class NavTop extends React.Component {
                     {state => (
                         <ul className="filterBox" style={{
                             ...defaultStyle,
-                            ...transitionStyles[state]
+                            ...transitionStyles[state],
+                            display: this.state.in ? "block" : "none"
                         }}>
                             <li><Link to="/">全部课程</Link></li>
                             <li><Link to="/vue">vuejs</Link></li>

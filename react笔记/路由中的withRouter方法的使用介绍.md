@@ -86,3 +86,11 @@
         第一种需要有地址匹配，第二种没有地址匹配都被模拟成受路由管控组件
 ```
 
+
+#react-router-dom库中的Route组件中的render属性的使用注意
+```
+    react-router-dom库中的Route组件中的render属性中返回的组件是不受路由管控的，如果需要使用路由管控，需要react-router-dom库中的withRouter方法处理一下
+    
+
+```
+

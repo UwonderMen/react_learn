@@ -1,14 +1,14 @@
 let express = require('express');
 let bodyParser = require('body-parser');
 let cookieParser = require("cookie-parser");
-let session = requrie("express-session");
+let session = require("express-session");
 let app = express();
 
 //const _ = require('lodash');
 //let cors = require('cors');
 //CORS
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', "http://localhost:9000");//来源的域名和端口号
+  res.header('Access-Control-Allow-Origin', "*");//来源的域名和端口号
   res.header('Access-Control-Allow-Headers', "Content-Type,Accept");//允许的跨域头
   res.header('Access-Control-Allow-Methods', "GET,POST,PUT,OPTIONS,DELETE");//允许的方法
   //如果请求的方法名是OPTIONS的话，则直接结束 请求
@@ -67,13 +67,16 @@ app.post('/login', function (req, res) {
       maxAge: 90000,
       httpOnly: true
     })
+    req.session.username = body.username;
     res.json({
       user,
-      success: '用户登录成功!'
+      code: 0,
+      msg: '用户登录成功!'
     });
   } else {
     res.json({
-      error: '用户登录失败!'
+      code: -1,
+      msg: '用户登录失败!'
     });
   }
 });
@@ -82,16 +85,39 @@ app.post('/login', function (req, res) {
 app.get("/person/login", (req, res) => {
   let body = req.body;
   let username = req.cookies.username;
-  if (username) {
+  if (username && req.session.username && username == req.session.username) {
     res.json({
       code: 0,
       result: "已登录"
     })
+  } else {
+    res.json({
+      code: -1,
+      result: "未登录"
+    })
   }
-  res.json({
-    code: -1,
-    result: "未登录"
-  })
+})
+app.get("/person/loginout", (req, res) => {
+  req.session.username = null;
+  res.send({ code: 0, msg: "success" });
+})
+
+app.get("/person/info", (req, res) => {
+  let username = req.cookies.username;
+  let user = users.find(item => item.username == body.username);
+  if (user) {
+    res.send({
+      code: 0,
+      data: user,
+      msg: "查询成功"
+    })
+  } else {
+    res.send({
+      code: -1,
+      data: null,
+      msg: "查询失败"
+    })
+  }
 })
 
 app.listen(3001);
