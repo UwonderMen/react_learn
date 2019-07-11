@@ -34,7 +34,7 @@ ReactDOM.render(<Provider store={store}>
                 <NavTop></NavTop>
                 <div className="container">
                     <Switch>
-                        <Route path="/course" exact component={Home}></Route>
+                        <Route path="/course" component={Home}></Route>
                         <Route path="/mycourse" component={MyCourse}></Route>
                         <Route path="/person" component={Personal}></Route>
                         <Redirect from="/" to="/course" />

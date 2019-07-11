@@ -4,6 +4,7 @@ import { Form, Icon, Input, Button, Modal } from 'antd';
 import { Link } from "react-router-dom";
 import md5 from "blueimp-md5";
 import { login } from "../../api/person";
+import action from "../../store/action";
 
 let loginFial = () => {
     Modal.error({
@@ -61,12 +62,14 @@ class Login extends React.Component {
                     username,
                     password
                 })
-                if (parseInt(res.code) === 0)
+                if (parseInt(res.code) === 0) {
                     this.props.history.go(-1)
+                    this.props.queryBaseInfo();
+                }
                 else
                     loginFial();
             }
         });
     }
 }
-export default Form.create()(connect()(Login));
+export default Form.create()(connect(null, action.personAction)(Login));

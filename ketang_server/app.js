@@ -8,7 +8,8 @@ let app = express();
 //let cors = require('cors');
 //CORS
 app.use(function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', "*");//来源的域名和端口号
+  res.header('Access-Control-Allow-Origin', "http://localhost:3000");//来源的域名和端口号
+  res.header('Access-Control-Allow-Credentials', true);//来源的域名和端口号
   res.header('Access-Control-Allow-Headers', "Content-Type,Accept");//允许的跨域头
   res.header('Access-Control-Allow-Methods', "GET,POST,PUT,OPTIONS,DELETE");//允许的方法
   //如果请求的方法名是OPTIONS的话，则直接结束 请求
@@ -24,9 +25,20 @@ app.use(cookieParser());
 app.use(session({
   secret: 'secret',
 }));
+
+app.use(function (req, res, next) {
+  console.log(req.headers)
+  console.log("\n")
+  console.log("===========================")
+  next();
+
+});
 let sliders = require('./mock/sliders');
-app.get('/getSliders', function (req, res) {
-  res.json(sliders);
+app.get('/course/bannerlist', function (req, res) {
+  res.json({
+    code: 0,
+    data: sliders
+  });
 });
 let lessons = require('./mock/lessons');
 // http://localhost:3000/getLessons/vue?offset=0&limit=5
@@ -53,9 +65,9 @@ let users = [];
 app.post('/reg', function (req, res) {
   let user = req.body;//得到请求体 body-parser中间件
   users.push(user);
-  console.log(users);
   res.json({
-    success: '用户注册成功!'
+    code: 0,
+    msg: '用户注册成功!'
   });
 });
 
@@ -63,18 +75,17 @@ app.post('/login', function (req, res) {
   let body = req.body;//得到请求体 body-parser中间件{username,password}
   let user = users.find(item => item.username == body.username && item.password == body.password);
   if (user) {
+    req.session.username = body.username;
     res.cookie("username", body.username, {
       maxAge: 90000,
-      httpOnly: true
-    })
-    req.session.username = body.username;
-    res.json({
-      user,
+      path: '/'
+    });
+    res.send({
       code: 0,
       msg: '用户登录成功!'
     });
   } else {
-    res.json({
+    res.send({
       code: -1,
       msg: '用户登录失败!'
     });
@@ -99,12 +110,16 @@ app.get("/person/login", (req, res) => {
 })
 app.get("/person/loginout", (req, res) => {
   req.session.username = null;
-  res.send({ code: 0, msg: "success" });
+  res.cookie("username", req.session.username, {
+    maxAge: -1,
+    path: '/'
+  });
+  res.send({ code: 0, msg: "success", data: {} });
 })
 
 app.get("/person/info", (req, res) => {
   let username = req.cookies.username;
-  let user = users.find(item => item.username == body.username);
+  let user = users.find(item => item.username == username);
   if (user) {
     res.send({
       code: 0,

@@ -15,21 +15,25 @@ class Personal extends React.Component {
             isLogin: true
         }
     }
-    async componentWillMount() {
-        let result = await checkLogin(),
-            isLogin = result.code === 0 ? true : false;
-        // isLogin = true;
-        this.setState({ isLogin });
-    }
+    // async componentWillMount() {
+    //     let result = await checkLogin(),
+    //         isLogin = result.code === 0 ? true : false;
+    //     // isLogin = true;
+    //     this.setState({ isLogin });
+    // }
 
-    async componentWillUpdate() {
+    //注意：避免在componentWillUpdate或者componentDidUpdate钩子
+    //函数修改状态值，因为避免死循环
+
+    async componentWillReceiveProps() {
         let result = await checkLogin(),
-            isLogin = result.code === 0 ? true : false;
+            isLogin = parseInt(result.code) === 0 ? true : false;
         // isLogin = true;
         this.setState({ isLogin });
     }
 
     render() {
+        console.log(this.state)
         return <div>
             <Switch>
                 <Route path="/person/info" render={() => {
