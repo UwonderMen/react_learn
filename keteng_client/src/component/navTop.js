@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Icon } from "antd";
 import { Link } from "react-router-dom";
+import action from "../store/action";
 
 /**
  * transition来实现
@@ -52,16 +53,32 @@ class NavTop extends React.Component {
                             ...defaultStyle,
                             ...transitionStyles[state],
                             display: this.state.in ? "block" : "none"
-                        }}>
-                            <li><Link to="/">全部课程</Link></li>
-                            <li><Link to="/vue">vuejs</Link></li>
-                            <li><Link to="/react">reactjs</Link></li>
-                            <li><Link to="/node">nodejs</Link></li>
+                        }} onClick={this.handleClick}>
+                            <li data-type="all">全部课程</li>
+                            <li data-type="vue">vuejs</li>
+                            <li data-type="react">reactjs</li>
+                            <li data-type="nodejs">nodejs</li>
                         </ul>
                     )}
                 </Transition>
             </div>
         </div>
     }
+
+    handleClick = (ev) => {
+        let target = ev.target,
+            tarTag = target.tagName,
+            type = target.getAttribute("data-type");
+        if (tarTag.toLowerCase() === "li") {
+            this.props.queryList({
+                page: 1,
+                type: type,
+                flag: "replace"
+            })
+            this.setState({
+                in: !this.state.in
+            })
+        }
+    }
 }
-export default withRouter(connect()(NavTop));
+export default withRouter(connect(null, action.courseAction)(NavTop));

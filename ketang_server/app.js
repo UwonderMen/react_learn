@@ -27,9 +27,6 @@ app.use(session({
 }));
 
 app.use(function (req, res, next) {
-  console.log(req.headers)
-  console.log("\n")
-  console.log("===========================")
   next();
 
 });
@@ -42,28 +39,36 @@ app.get('/course/bannerlist', function (req, res) {
 });
 let lessons = require('./mock/lessons');
 // http://localhost:3000/getLessons/vue?offset=0&limit=5
-app.get('/getLessons/:category', function (req, res) {
-  let category = req.params.category;// all react vue 当前的分类
+app.get('/course/list', function (req, res) {
+  // let category = req.params.category;// all react vue 当前的分类
   // http://...getLessons/all?offset=0&limit=5
-  let { offset, limit } = req.query;// 问号传参
-  offset = isNaN(offset) ? 0 : parseInt(offset);//起始的索引
+  let { page, limit, type } = req.query;// 问号传参
+  page = isNaN(page) ? 0 : parseInt(page);//起始的索引
   limit = isNaN(limit) ? 5 : parseInt(limit);//每页的条数
   let list = JSON.parse(JSON.stringify(lessons));//深度克隆lessons
-  if (category != 'all') {
-    list = list.filter(item => item.category == category);
+  if (type != 'all') {
+    list = list.filter(item => item.category == type);
   }
   let total = list.length;//此分类下面的总条数
-  list = list.slice(offset, offset + limit);//截取当前页的数据
-  list.forEach(item => item.title = item.title + Math.random());
-  res.json({
-    list,
-    hasMore: total > offset + limit
+  let start = page === 1 ? (page - 1) * limit : (page - 1) * limit - 1,
+    end = ((page - 1) * limit + limit);
+
+  list = list.slice(start, end);//截取当前页的数据
+  // list.forEach(item => item.title = item.title + Math.random());
+  res.send({
+    total,
+    limit,
+    page,
+    hasMore: total > page + limit,
+    code: 0,
+    data: list,
   });
 });
 //此数组存放着用户信息
 let users = [];
 app.post('/reg', function (req, res) {
   let user = req.body;//得到请求体 body-parser中间件
+  user.cart = [];
   users.push(user);
   res.json({
     code: 0,
@@ -133,6 +138,125 @@ app.get("/person/info", (req, res) => {
       msg: "查询失败"
     })
   }
+})
+
+app.get("/course/info", (req, res, next) => {
+  username = req.cookies.username;
+  if (username) next();
+  else {
+    res.send({
+      code: -1,
+      data: null,
+      msg: "请先登录"
+    })
+  }
+}, (req, res) => {
+  let { courseid } = req.query,
+    username = req.cookies.username,
+    courses = require('./mock/lessons'),
+    lessons = JSON.parse(JSON.stringify(courses)),
+    course = lessons.find((item) => item.id === parseInt(courseid)),
+    user = users.find(item => item.username === username),
+    unpay = user.cart.filter(item => item.state === 0),
+    pay = user.cart.filter(item => item.state === 1);
+
+  if (course) {
+    res.send({
+      code: 0,
+      data: course,
+      unpay,
+      pay,
+      msg: "Success"
+    })
+  } else {
+    res.send({
+      code: -1,
+      data: null,
+      msg: "fialed"
+    })
+  }
+})
+
+/** 
+ * state
+ * -1：表示没有加入购物车
+ * 0：表示已经加入购物车，但未支付
+ * 1：表示已支付
+*/
+
+app.post("/course/store/add", (req, res, next) => {
+  let username = req.cookies.username
+  let user = users.find(item => item.username == username);
+  if (username && user) next();
+  else
+    res.send({
+      code: -1,
+      msg: "未登录,添加失败"
+    });
+}, (req, res) => {
+  let { courseid } = req.body,
+    username = req.cookies.username,
+    course = {
+      state: 0,
+      courseid: null
+    };
+  cart_user = users.find(item => item.username === username);
+  if (cart_user.cart.length === 0 || cart_user.cart.find(item => item.id === courseid && (item.state === -1 || item.state === 1))) {
+    course.courseid = courseid;
+    cart_user.cart.push(course);
+    res.send({
+      code: 0,
+      msg: "添加成功"
+    });
+  }
+  console.log("----------")
+  console.log(cart_user.cart)
+  console.log("----------")
+  if (cart_user.cart.find(item => item.id === courseid && item.state === 0)) {
+    res.send({
+      code: -1,
+      msg: "已经添加过了"
+    })
+  }
+});
+app.post("/course/store/remove", (req, res, next) => {
+  console.log("delete")
+  let username = req.cookies.username
+  let user = users.find(item => item.username == username);
+  if (username && user) next();
+  else
+    res.send({
+      code: -1,
+      msg: "未登录,添加失败"
+    });
+}, (req, res) => {
+  let { courseid } = req.body,
+    username = req.cookies.username,
+    user = users.find(item => item.username == username),
+    len = user.cart.length;
+  user.cart = user.cart.filter(item => item.courseid !== parseInt(courseid));
+  console.log(user.cart)
+  console.log(courseid)
+  let new_len = user.cart.length;
+  new_len !== len ? res.send({
+    code: 0,
+    msg: "删除成功"
+  }) : res.send({
+    code: -1,
+    msg: "删除失败"
+  })
+})
+
+app.get("/course/store/info", (req, res) => {
+  let { state } = req.query,
+    username = req.cookies.username,
+    user = users.find(item => item.username == username),
+    state_lists = user.cart.filter(item => item.state === parseInt(state));
+  res.send({
+    data: state_lists,
+    code: 0,
+    msg: "查询成功"
+  })
 })
 
 app.listen(3001);
