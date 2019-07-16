@@ -4,4 +4,4 @@ import reduxPromise from "redux-promise";
 import reduxThunk from "redux-thunk";
 import reducers from "./reducer";
 
-export default createStore(reducers, applyMiddleware(reduxLogger, reduxPromise, reduxThunk))
+export default createStore(reducers, applyMiddleware(reduxPromise, reduxThunk))

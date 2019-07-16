@@ -19,3 +19,19 @@ export function login(payload) {
 export function register(payload) {
     return axios.post("/reg", payload)
 }
+
+export function queryCartInfo(state = 0) {
+    return axios.get("/course/store/info",
+        {
+            params: {
+                state
+            }
+        }
+    )
+}
+
+export function payFor(id) {
+    return axios.post("/store/pay", {
+        id
+    })
+}

@@ -22,20 +22,7 @@ const courseAction = {
             })
         }
     },
-    queryUnPay(payload = {}) {
-        let { state = 0 } = payload;
-        return {
-            type: Types.COURSE_UNPAY,
-            payload: queryCartInfo(state)
-        }
-    },
-    queryPay(payload = {}) {
-        let { state = 1 } = payload;
-        return {
-            type: Types.COURSE_PAY,
-            payload: queryCartInfo(state)
-        }
-    }
+   
 };
 
 export default courseAction;

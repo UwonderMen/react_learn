@@ -15,15 +15,14 @@ class Info extends React.Component {
     }
 
     async componentWillMount() {
-        console.log(this.props)
         let result = await queryCourseInfo(this.props.location.search);
         let courseid = QS.parse(this.props.location.search.substr(1))["courseid"];
         if (result.code === 0) {
             let { pay, unpay } = this.props.shopCart,
                 isshop = -1;
-            if (unpay.find(item => parseInt(item.id) === parseInt(courseid)))
+            if (unpay.find(item => parseInt(item.courseid) === parseInt(courseid)))
                 isshop = 0;
-            if (pay.find(item => parseInt(item.id) === parseInt(courseid)))
+            if (pay.find(item => parseInt(item.courseid) === parseInt(courseid)))
                 isshop = 1;
             this.setState({
                 data: result.data,
@@ -35,7 +34,6 @@ class Info extends React.Component {
     render() {
         let { name, desc, price, video, id } = this.state.data,
             { isAddCart } = this.state;
-
         return <div className="courseBaseInfo">
             <video src={video} controls preload="none"></video>
             <div className="content">
@@ -76,4 +74,4 @@ class Info extends React.Component {
         }
     }
 }
-export default connect(state => ({ ...state.courseReducer }), action.courseAction)(Info);
+export default connect(state => ({ ...state.personReducer }), action.personAction)(Info);

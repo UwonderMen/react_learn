@@ -4,12 +4,7 @@ import md5 from "blueimp-md5";
 import {
     Form,
     Input,
-    Tooltip,
-    Icon,
-    Cascader,
     Select,
-    Row,
-    Col,
     Checkbox,
     Button,
     Modal
@@ -146,13 +141,12 @@ class Regiter extends React.Component {
         ev.preventDefault();
         this.props.form.validateFieldsAndScroll(async (err, values) => {
             if (!err) {
-                console.log(values);
                 values.password = md5(values.password)
                 values.confirm = md5(values.confirm)
                 let result = await register(values);
                 if (result.code === 0) {
+                    // this.props.queryBaseInfo()该不该调用???
                     this.props.history.push("/person")
-                    this.props.queryBaseInfo()
                     return;
                 }
                 loginFial()

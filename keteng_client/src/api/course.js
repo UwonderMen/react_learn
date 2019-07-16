@@ -25,12 +25,3 @@ export function removeCart(payload) {
     return axios.post("/course/store/remove", payload)
 }
 
-export function queryCartInfo(state = 0) {
-    return axios.get("/course/store/info",
-        {
-            params: {
-                state
-            }
-        }
-    )
-}

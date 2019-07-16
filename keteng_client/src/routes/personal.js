@@ -33,7 +33,6 @@ class Personal extends React.Component {
     }
 
     render() {
-        console.log(this.state)
         return <div>
             <Switch>
                 <Route path="/person/info" render={() => {

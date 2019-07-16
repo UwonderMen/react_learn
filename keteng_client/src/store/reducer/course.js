@@ -10,10 +10,6 @@ export default function courseReducer(
             data: []
         },
         courseType: "all",
-        shopCart: {
-            unpay: [],
-            pay: []
-        }
     },
     action) {
     let new_state = JSON.parse(JSON.stringify(state));
@@ -36,30 +32,9 @@ export default function courseReducer(
                 if (result.hasOwnProperty(key)) {
                     if (key !== "data")
                         new_state.courseData[key] = result[key];
-                    else if (key === "unpay")
-                        new_state.shopCart.unpay = result[key];
-                    else if (key === "pay")
-                        new_state.shopCart.pay = result[key];
                 }
             }
             break;
-        case Types.COURSE_PAY:
-            {
-                let { code, data } = action.payload;
-                if (code === 0) {
-                    new_state.shopCart.pay = data;
-                }
-            }
-            break;
-        case Types.COURSE_UNPAY:
-            {
-                let { code, data } = action.payload;
-                if (code === 0) {
-                    new_state.shopCart.unpay = data;
-                }
-            }
-            break;
-
     }
     return new_state;
 }

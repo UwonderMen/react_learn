@@ -2,7 +2,6 @@ import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { Icon } from "antd";
-import { Link } from "react-router-dom";
 import action from "../store/action";
 
 /**
@@ -27,7 +26,9 @@ class NavTop extends React.Component {
         super(props, context, updater)
         this.state = {
             in: false
-        }
+        };
+        this.props.queryUnPay();
+        this.props.queryPay();
     }
     render() {
         /** 
@@ -81,4 +82,4 @@ class NavTop extends React.Component {
         }
     }
 }
-export default withRouter(connect(null, action.courseAction)(NavTop));
+export default withRouter(connect(null, { ...action.personAction, ...action.courseAction })(NavTop));

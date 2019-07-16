@@ -63,8 +63,9 @@ class Login extends React.Component {
                     password
                 })
                 if (parseInt(res.code) === 0) {
-                    this.props.history.go(-1)
                     this.props.queryBaseInfo();
+                    this.props.queryUnPay();
+                    this.props.history.go(-1)
                 }
                 else
                     loginFial();

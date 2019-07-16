@@ -1,9 +1,10 @@
 import React from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { Button } from "antd";
+import { withRouter, Link } from "react-router-dom";
+import { Button, Alert } from "antd";
 import { loginOut } from "../../api/person";
 import action from "../../store/action";
+import Tips from "../personal/tips";
 
 class Info extends React.Component {
     constructor(props, context, updater) {
@@ -17,11 +18,8 @@ class Info extends React.Component {
         }
     }
     render() {
-        let baseInfo = {};
-        if ("baseInfo" in this.props) {
-            baseInfo = this.props.baseInfo;
-        }
-        return <div className="personBaseInfo">
+        let { baseInfo } = this.props;
+        return baseInfo ? (<div className="personBaseInfo">
             <div><p>
                 <span>用户名</span>
                 <span>{baseInfo.username ? baseInfo.username : "无"}</span>
@@ -44,7 +42,7 @@ class Info extends React.Component {
                     }}>退出登录</Button>
                 </p>
             </div>
-        </div>
+        </div>) : <Tips />
     }
 }
 export default withRouter(connect(state => ({ ...state.personReducer }), action.personAction)(Info));

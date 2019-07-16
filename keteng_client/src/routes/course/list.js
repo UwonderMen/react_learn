@@ -31,6 +31,7 @@ class List extends React.Component {
     render() {
         let { bannerData, courseData, courseType } = this.props;
         let data = courseData.data;
+        console.log(data)
         return <div className="courseListBox">
             {
                 bannerData && bannerData.length > 0 ? (<div className="banner">
